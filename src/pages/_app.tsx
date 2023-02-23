@@ -1,9 +1,12 @@
+import { ChakraProvider, extendTheme, type Theme } from "@chakra-ui/react";
 import { type AppType } from "next/dist/shared/lib/utils";
 
-import "~/styles/globals.css";
-
 const MyApp: AppType = ({ Component, pageProps }) => {
-  return <Component {...pageProps} />;
+  return (
+    <ChakraProvider theme={extendTheme({ config: { initialColorMode: "dark" } } as Theme)}>
+      <Component {...pageProps} />
+    </ChakraProvider>
+  );
 };
 
 export default MyApp;
