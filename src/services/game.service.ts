@@ -18,3 +18,20 @@ export const createGame = (players: string[]) => {
 
   return game;
 };
+
+export const listAllGames = () => {
+  const games: Game[] = [];
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.startsWith("game.")) {
+      const game = localStorage.getItem(key);
+
+      if (!game) continue;
+
+      games.push(JSON.parse(game) as Game);
+    }
+  }
+
+  return games;
+};
