@@ -2,9 +2,7 @@
 module.exports = {
   overrides: [
     {
-      extends: [
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-      ],
+      extends: ["plugin:@typescript-eslint/recommended-requiring-type-checking"],
       files: ["*.ts", "*.tsx"],
       parserOptions: {
         project: "tsconfig.json",
@@ -23,6 +21,14 @@ module.exports = {
       {
         prefer: "type-imports",
         fixStyle: "inline-type-imports",
+      },
+    ],
+    "@typescript-eslint/no-misused-promises": [
+      2,
+      {
+        checksVoidReturn: {
+          attributes: false,
+        },
       },
     ],
   },
