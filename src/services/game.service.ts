@@ -10,7 +10,7 @@ export const createGame = (players: string[]) => {
     id: uuid(),
     players: players.map((player) => ({
       name: player,
-      pointsHistory: [],
+      pointsHistory: [0],
     })),
   };
 
