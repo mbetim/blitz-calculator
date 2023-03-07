@@ -17,7 +17,7 @@ const Home: NextPage = () => {
       </Head>
 
       <Stack w="full" h="100vh" spacing={3} justify="center" alignItems="center">
-        <Heading as="h1" size="2xl">
+        <Heading as="h1" size="2xl" textAlign="center">
           Welcome to <strong>Dutch Blitz Calculator!</strong>
         </Heading>
 
