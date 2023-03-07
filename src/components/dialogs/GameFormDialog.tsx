@@ -33,7 +33,7 @@ interface FormValues {
 }
 
 export const GameFormDialog: React.FC<GameFormDialogProps> = (props) => {
-  const { register, reset, handleSubmit } = useForm<FormValues>();
+  const { register, setFocus, reset, handleSubmit } = useForm<FormValues>();
   const toast = useToast();
   const router = useRouter();
 
@@ -47,6 +47,7 @@ export const GameFormDialog: React.FC<GameFormDialogProps> = (props) => {
     if (players.includes(player)) return toast({ title: "Player already exists", status: "error" });
 
     setPlayers([...players, player]);
+    setFocus("player");
     reset();
   });
 
