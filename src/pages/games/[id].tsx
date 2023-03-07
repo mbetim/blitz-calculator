@@ -18,7 +18,12 @@ const debounce = <F extends (...args: any[]) => any>(func: F, wait = 300) => {
 const GamePage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const game = useQuery(["game", id], () => getGameById(id as string), { enabled: !!id });
+  const game = useQuery(["game", id], () => getGameById(id as string), {
+    enabled: !!id,
+    onSuccess(data) {
+      if (!data) return router.replace("/");
+    },
+  });
   const toast = useToast();
 
   const onNewRound = async () => {
