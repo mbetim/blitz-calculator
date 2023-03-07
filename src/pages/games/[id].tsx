@@ -54,7 +54,14 @@ const GamePage: NextPage = () => {
       <HStack>
         {game.data?.players.map((player, playerIndex) => (
           <Box key={player.name} flex={1}>
-            <Text align="center" fontSize="xl">
+            <Text
+              align="center"
+              fontSize="xl"
+              position="sticky"
+              top={0}
+              bgColor="chakra-body-bg"
+              zIndex={1}
+            >
               {player.name}
             </Text>
 
