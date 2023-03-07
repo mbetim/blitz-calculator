@@ -1,6 +1,6 @@
 import { uuid } from "uuidv4";
 
-interface Game {
+export interface Game {
   id: string;
   players: { name: string; pointsHistory: number[] }[];
 }
@@ -34,4 +34,17 @@ export const listAllGames = () => {
   }
 
   return games;
+};
+
+export const getGameById = (id: string) => {
+  const game = localStorage.getItem(`game.${id}`);
+
+  if (!game) return null;
+
+  return JSON.parse(game) as Game;
+};
+
+export const updateGameById = (id: string, game: Game) => {
+  localStorage.setItem(`game.${id}`, JSON.stringify({ ...game, id }));
+  return game;
 };
