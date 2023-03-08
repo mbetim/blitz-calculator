@@ -1,4 +1,4 @@
-import { Box, Button, Divider, HStack, Input, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Divider, Heading, HStack, Input, Text, useToast } from "@chakra-ui/react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
@@ -55,20 +55,21 @@ const GamePage: NextPage = () => {
   });
 
   return (
-    <div>
-      <HStack overflowX="auto">
+    <Box p={[1, 2]}>
+      <HStack overflowX="scroll" height="90vh">
         {game.data?.players.map((player, playerIndex) => (
           <Box key={player.name} flex={1} minW="100px">
-            <Text
-              align="center"
+            <Heading
+              textAlign="center"
               fontSize="xl"
               position="sticky"
               top={0}
               bgColor="chakra-body-bg"
+              color="gray.400"
               zIndex={1}
             >
               {player.name}
-            </Text>
+            </Heading>
 
             {player.pointsHistory.map((point, pointIndex) => (
               <Input
@@ -96,7 +97,7 @@ const GamePage: NextPage = () => {
       <Button onClick={onNewRound} mt={3}>
         New Round
       </Button>
-    </div>
+    </Box>
   );
 };
 
