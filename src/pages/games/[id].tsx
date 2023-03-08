@@ -60,8 +60,8 @@ const GamePage: NextPage = () => {
   });
 
   return (
-    <Box p={[1, 2]}>
-      <HStack overflowX="scroll" height="90vh">
+    <Box p={[1, 2]} overflowX="scroll" height="100vh">
+      <HStack>
         {game.data?.players.map((player, playerIndex) => (
           <Box key={player.name} flex={1} minW="100px">
             <Heading
