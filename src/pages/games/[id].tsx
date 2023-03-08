@@ -56,9 +56,9 @@ const GamePage: NextPage = () => {
 
   return (
     <div>
-      <HStack>
+      <HStack overflowX="auto">
         {game.data?.players.map((player, playerIndex) => (
-          <Box key={player.name} flex={1}>
+          <Box key={player.name} flex={1} minW="100px">
             <Text
               align="center"
               fontSize="xl"
@@ -93,7 +93,9 @@ const GamePage: NextPage = () => {
         ))}
       </HStack>
 
-      <Button onClick={onNewRound}>New Round</Button>
+      <Button onClick={onNewRound} mt={3}>
+        New Round
+      </Button>
     </div>
   );
 };
