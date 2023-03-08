@@ -26,7 +26,7 @@ const Home: NextPage = () => {
         <Divider my={2} w="80%" />
 
         {data?.map((game, index) => (
-          <Link key={game.id} as={NextLink} href={`/games/${game.id}`}>
+          <Link key={game.id} as={NextLink} href={`/games/${game.id}`} textAlign="center">
             Game #{index + 1} | {game.players.map((player) => player.name).join(", ")}
           </Link>
         ))}
