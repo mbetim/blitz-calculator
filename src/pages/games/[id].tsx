@@ -1,24 +1,28 @@
-import { Box, Button, Divider, Heading, HStack, Input, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Heading,
+  HStack,
+  Input,
+  Text,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import { useRef } from "react";
 import { useQuery } from "react-query";
 import { z } from "zod";
+import { ConfirmationDialog } from "~/components/dialogs/ConfirmationDialog";
 import { getGameById, updateGameById } from "~/services/game.service";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const debounce = <F extends (...args: any[]) => any>(func: F, wait = 300) => {
-  let timeout: NodeJS.Timeout;
-
-  return (...args: Parameters<F>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => void func(...args), wait);
-  };
-};
 
 const GamePage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
+
+  const confirmationDialog = useDisclosure();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const game = useQuery(["game", id], () => getGameById(id as string), {
     enabled: !!id,
@@ -42,7 +46,7 @@ const GamePage: NextPage = () => {
     firstPlayerLastRoundInputRef.current?.focus();
   };
 
-  const onPointChange = debounce(async (value: string, playerIndex: number, pointIndex: number) => {
+  const onPointChange = async (value: string, playerIndex: number, pointIndex: number) => {
     if (!game.data) return;
 
     const player = game.data.players[playerIndex];
@@ -57,57 +61,85 @@ const GamePage: NextPage = () => {
 
     updateGameById(game.data.id, game.data);
     await game.refetch();
-  });
+  };
+
+  const resetGame = () => {
+    if (!game.data) return;
+
+    game.data.players.forEach((player) => {
+      player.pointsHistory = [0];
+    });
+
+    updateGameById(game.data.id, game.data);
+    formRef.current?.reset();
+
+    confirmationDialog.onClose();
+  };
 
   return (
-    <Box p={[1, 2]} overflowX="scroll" height="100vh">
-      <HStack>
-        {game.data?.players.map((player, playerIndex) => (
-          <Box key={player.name} flex={1} minW="100px">
-            <Heading
-              textAlign="center"
-              fontSize="xl"
-              position="sticky"
-              top={0}
-              bgColor="chakra-body-bg"
-              color="gray.400"
-              zIndex={1}
-            >
-              {player.name}
-            </Heading>
-
-            {player.pointsHistory.map((point, roundIndex) => (
-              <Input
-                key={roundIndex}
-                ref={
-                  playerIndex === 0 && roundIndex === player.pointsHistory.length - 1
-                    ? firstPlayerLastRoundInputRef
-                    : undefined
-                }
-                type="number"
+    <form ref={formRef}>
+      <Box p={[1, 2]} overflowX="scroll" height="100vh">
+        <HStack>
+          {game.data?.players.map((player, playerIndex) => (
+            <Box key={player.name} flex={1} minW="100px">
+              <Heading
                 textAlign="center"
-                defaultValue={point.toString()}
-                onChange={(event) => onPointChange(event.target.value, playerIndex, roundIndex)}
-                tabIndex={
-                  roundIndex < player.pointsHistory.length - 1 ? undefined : playerIndex + 1
-                }
-                border="none"
-              />
-            ))}
+                fontSize="xl"
+                position="sticky"
+                top={0}
+                bgColor="chakra-body-bg"
+                color="gray.400"
+                zIndex={1}
+              >
+                {player.name}
+              </Heading>
 
-            <Divider />
+              {player.pointsHistory.map((point, roundIndex) => (
+                <Input
+                  key={roundIndex}
+                  ref={
+                    playerIndex === 0 && roundIndex === player.pointsHistory.length - 1
+                      ? firstPlayerLastRoundInputRef
+                      : undefined
+                  }
+                  type="number"
+                  textAlign="center"
+                  defaultValue={point.toString()}
+                  onChange={(event) => onPointChange(event.target.value, playerIndex, roundIndex)}
+                  tabIndex={
+                    roundIndex < player.pointsHistory.length - 1 ? undefined : playerIndex + 1
+                  }
+                  border="none"
+                />
+              ))}
 
-            <Text align="center" fontSize="xl">
-              {player.pointsHistory.reduce((a, b) => a + b, 0)}
-            </Text>
-          </Box>
-        ))}
-      </HStack>
+              <Divider />
 
-      <Button onClick={onNewRound} mt={3}>
-        New Round
-      </Button>
-    </Box>
+              <Text align="center" fontSize="xl">
+                {player.pointsHistory.reduce((a, b) => a + b, 0)}
+              </Text>
+            </Box>
+          ))}
+        </HStack>
+
+        <HStack mt={3}>
+          <Button type="button" onClick={onNewRound}>
+            New Round
+          </Button>
+
+          <Button type="button" onClick={confirmationDialog.onOpen}>
+            Reset game
+          </Button>
+        </HStack>
+
+        <ConfirmationDialog
+          isOpen={confirmationDialog.isOpen}
+          onClose={confirmationDialog.onClose}
+          message="Are you sure you want reset this game?"
+          onConfirm={resetGame}
+        />
+      </Box>
+    </form>
   );
 };
 
